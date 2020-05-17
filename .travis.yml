@@ -32,12 +32,13 @@ jobs:
           # - sudo vagrant plugin install vagrant-vbguest #https://docs.openstack.org/developer/dragonflow/installation.html
           - sudo vagrant status
           - sudo virsh list --all #show all running KVM/libvirt VMs
-          - sudo vagrant box add "bento/centos-7.6"
+          - sudo vagrant box add "bento/centos-7.6" --provider=virtualbox
           - sudo vagrant mutate "bento/centos-7.6" libvirt
           - vagrant box list #veridy installed boxes
           - vagrant status #Check the status of the VMs to see that none of them have been created yet
+          - sudo vagrant up --provider=libvirt
           # - sudo vagrant up --provider=libvirt vg-irods01
-          - - travis_wait 30 sudo vagrant up --provider=libvirt
+          # - travis_wait 30 sudo vagrant up --provider=libvirt
           - sudo vagrant status
           - sudo vagrant global-status
           - sudo vagrant ssh master01 -c "hostnamectl status"
