@@ -21,7 +21,7 @@ Vagrant.configure("2") do |config|
     ansible.playbook = "deploy.yml"
     ansible.become = true
     ansible.compatibility_mode = "2.0"
-    ansible.version = "2.8.2"
+    ansible.version = "2.9.7"
     end
     hpcluster.vm.provision "shell", inline: <<-SHELL
     systemctl disable firewalld
@@ -176,7 +176,7 @@ Vagrant.configure("2") do |config|
     ansible.playbook = "deploy.yml"
     ansible.become = true
     ansible.compatibility_mode = "2.0"
-    ansible.version = "2.8.2"
+    ansible.version = "2.9.7"
     end
     hpcluster.vm.provision "shell", inline: <<-SHELL
     hostnamectl status
@@ -195,7 +195,7 @@ Vagrant.configure("2") do |config|
     ansible.playbook = "deploy.yml"
     ansible.become = true
     ansible.compatibility_mode = "2.0"
-    ansible.version = "2.8.2"
+    ansible.version = "2.9.7"
     end
     hpcluster.vm.provision "shell", inline: <<-SHELL
     hostnamectl status
