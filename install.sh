@@ -32,5 +32,3 @@ config.vm.define "compute01" do |hpcluster|
   SHELL
 end
 EOF
-vagrant up  "compute01 --provider=libvirt
-vagrant ssh "compute01" -c "hostnamectl"
