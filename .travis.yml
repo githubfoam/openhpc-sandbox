@@ -270,8 +270,6 @@ fleet_script_vagrant_centos_tasks : &fleet_script_vagrant_centos_tasks
           # - sudo vagrant mutate "centos/7"  libvirt
           - sudo vagrant box list #veridy installed boxes
           # - |
-          #   “`bash
-          #   !/bin/bash
           #   cat > Vagrantfile << EOF
           #   # -*- mode: ruby -*-
           #   # vi: set ft=ruby :
@@ -281,37 +279,38 @@ fleet_script_vagrant_centos_tasks : &fleet_script_vagrant_centos_tasks
           #       vb.memory = "2048"
           #       vb.cpus = 2
           #     end
-          #   config.vm.define "master01" do |hpcluster|
-          #     hpcluster.vm.box = "bento/centos-7.7"
-          #     hpcluster.vm.hostname = "master01"
-          #     hpcluster.vm.network "private_network", ip: "192.168.1.254"
-          #     hpcluster.vm.provider "virtualbox" do |vb|
-          #         vb.name = "master01"
-          #         vb.memory = "4096"
+          #     config.vm.define "master01" do |hpcluster|
+          #       hpcluster.vm.box = "bento/centos-7.7"
+          #       hpcluster.vm.hostname = "master01"
+          #       hpcluster.vm.network "private_network", ip: "192.168.1.254"
+          #       hpcluster.vm.provider "virtualbox" do |vb|
+          #           vb.name = "master01"
+          #           vb.memory = "4096"
+          #       end
+          #       hpcluster.vm.provision "ansible_local" do |ansible|
+          #       ansible.playbook = "deploy.yml"
+          #       ansible.become = true
+          #       ansible.compatibility_mode = "2.0"
+          #       ansible.version = "2.9.7"
+          #       end
+          #       hpcluster.vm.provision "shell", inline: <<-SHELL
+          #       systemctl disable firewalld
+          #       systemctl stop firewalld
+          #       yum -y update
+          #       yum install -y wget
+          #       hostnamectl status
+          #       SHELL
           #     end
-          #     hpcluster.vm.provision "ansible_local" do |ansible|
-          #     ansible.playbook = "deploy.yml"
-          #     ansible.become = true
-          #     ansible.compatibility_mode = "2.0"
-          #     ansible.version = "2.9.7"
-          #     end
-          #     hpcluster.vm.provision "shell", inline: <<-SHELL
-          #     systemctl disable firewalld
-          #     systemctl stop firewalld
-          #     yum -y update
-          #     yum install -y wget
-          #     hostnamectl status
-          #     SHELL
           #   end
           #   EOF
           #   vagrant up  master01 --provider=libvirt
-          #   “`
           # - sudo vagrant up  compute01 --provider=libvirt
           # - sudo vagrant up  --provider=libvirt
           - source install.sh
-          - sudo vagrant status #Check the status of the VMs to see that none of them have been created yet
+          - vagrant up  --provider=libvirt
           - vagrant up  "compute01" --provider=libvirt
           - vagrant ssh "compute01" -c "hostnamectl"
+          - sudo vagrant status #Check the status of the VMs to see that none of them have been created yet
           # - sudo vagrant up --provider=libvirt vg-irods01
           # - sudo vagrant up --no-parallel --provider=libvirt # vagrant serial runs
           # - travis_wait 40 sudo vagrant up --provider=libvirt
