@@ -262,7 +262,7 @@ fleet_script_vagrant_centos_tasks : &fleet_script_vagrant_centos_tasks
           - sudo cp vagrant /usr/bin
           - vagrant version
           - echo "============================================="
-          # - sudo vagrant plugin install vagrant-libvirt #The vagrant-libvirt plugin is required when using KVM on Linux
+          - sudo vagrant plugin install vagrant-libvirt #The vagrant-libvirt plugin is required when using KVM on Linux
           # - sudo vagrant plugin install vagrant-mutate #Convert vagrant boxes to work with different providers
           - sudo virsh list --all #show all running KVM/libvirt VMs
           - sudo vagrant box add "centos/7"  --provider=libvirt #https://app.vagrantup.com/centos/boxes/7
@@ -307,7 +307,7 @@ fleet_script_vagrant_centos_tasks : &fleet_script_vagrant_centos_tasks
           # - sudo vagrant up  compute01 --provider=libvirt
           # - sudo vagrant up  --provider=libvirt
           - source install.sh
-          - vagrant up  --provider=libvirt
+          # - vagrant up  --provider=libvirt
           - vagrant up  "compute01" --provider=libvirt
           - vagrant ssh "compute01" -c "hostnamectl"
           - sudo vagrant status #Check the status of the VMs to see that none of them have been created yet
