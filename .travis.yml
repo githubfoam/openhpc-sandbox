@@ -270,7 +270,10 @@ fleet_script_vagrant_centos_tasks : &fleet_script_vagrant_centos_tasks
           # - sudo vagrant up --no-parallel --provider=libvirt
           # - sudo vagrant mutate "centos/7"  libvirt
           - sudo vagrant box list #veridy installed boxes
-          - cat > Vagrantfile << EOF
+          - |
+            cat > Vagrantfile << EOF
+            # -*- mode: ruby -*-
+            # vi: set ft=ruby :
             Vagrant.configure("2") do |config|
               config.vm.provider "virtualbox" do |vb|
                 vb.gui = false
@@ -300,7 +303,8 @@ fleet_script_vagrant_centos_tasks : &fleet_script_vagrant_centos_tasks
               SHELL
             end
             EOF
-          - sudo vagrant up  master01 --provider=libvirt
+            sudo vagrant up  master01 --provider=libvirt
+          # - sudo vagrant up  master01 --provider=libvirt
           # - sudo vagrant up  --provider=libvirt
           - sudo vagrant status #Check the status of the VMs to see that none of them have been created yet
           # - sudo vagrant up --provider=libvirt vg-irods01
