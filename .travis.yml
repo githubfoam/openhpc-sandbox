@@ -304,8 +304,9 @@ fleet_script_vagrant_centos_tasks : &fleet_script_vagrant_centos_tasks
             end
             EOF
             sudo vagrant up  master01 --provider=libvirt
-          # - sudo vagrant up  master01 --provider=libvirt
+          # - sudo vagrant up  compute01 --provider=libvirt
           # - sudo vagrant up  --provider=libvirt
+          - source install.sh
           - sudo vagrant status #Check the status of the VMs to see that none of them have been created yet
           # - sudo vagrant up --provider=libvirt vg-irods01
           # - sudo vagrant up --no-parallel --provider=libvirt # vagrant serial runs
