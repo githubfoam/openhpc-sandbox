@@ -180,7 +180,9 @@ fleet_script_vagrant_bentocentos7_tasks : &fleet_script_vagrant_bentocentos7_tas
           # - sudo vagrant up --no-parallel --provider=libvirt
           - sudo vagrant mutate "bento/centos-7.7"  libvirt
           - sudo vagrant box list #veridy installed boxes
-          - sudo vagrant up  --provider=libvirt
+          - source install.sh
+          - sudo vagrant up  "compute01" --provider=libvirt          
+          # - sudo vagrant up  --provider=libvirt
           - sudo vagrant status #Check the status of the VMs to see that none of them have been created yet
           # - sudo vagrant up --provider=libvirt vg-irods01
           # - sudo vagrant up --no-parallel --provider=libvirt # vagrant serial runs
@@ -338,8 +340,8 @@ matrix:
         - source ~venvpy3/bin/activate
       <<: *fleet_install_tasks
       <<: *fleet_script_tasks
-      <<: *fleet_script_vagrant_centos_tasks
-      # <<: *fleet_script_vagrant_bentocentos7_tasks
+      # <<: *fleet_script_vagrant_centos_tasks
+      <<: *fleet_script_vagrant_bentocentos7_tasks
       after_success:
         - deactivate
 

@@ -13,7 +13,7 @@ cat > Vagrantfile << EOF
           end
 
           config.vm.define "compute01" do |hpcluster|
-            hpcluster.vm.box = "centos/7"
+            hpcluster.vm.box = "bento/centos-7.7" 
             hpcluster.vm.hostname = "compute01"
             hpcluster.vm.network "private_network", ip: "192.168.1.254"
             hpcluster.vm.provider "virtualbox" do |vb|
