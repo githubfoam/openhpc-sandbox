@@ -271,48 +271,48 @@ fleet_script_vagrant_centos_tasks : &fleet_script_vagrant_centos_tasks
           # - sudo vagrant up --no-parallel --provider=libvirt
           # - sudo vagrant mutate "centos/7"  libvirt
           - sudo vagrant box list #veridy installed boxes
-          - |
-            cat > Vagrantfile << EOF
-            # -*- mode: ruby -*-
-            # vi: set ft=ruby :
-            Vagrant.configure("2") do |config|
-              config.vm.provider "virtualbox" do |vb|
-                vb.gui = false
-                vb.memory = "2048"
-                vb.cpus = 2
-              end
-              config.vm.define "master01" do |hpcluster|
-                hpcluster.vm.box = "bento/centos-7.7"
-                hpcluster.vm.hostname = "master01"
-                hpcluster.vm.network "private_network", ip: "192.168.1.254"
-                hpcluster.vm.provider "virtualbox" do |vb|
-                    vb.name = "master01"
-                    vb.memory = "4096"
-                end
-                hpcluster.vm.provision "ansible_local" do |ansible|
-                ansible.playbook = "deploy.yml"
-                ansible.become = true
-                ansible.compatibility_mode = "2.0"
-                ansible.version = "2.9.7"
-                end
-                hpcluster.vm.provision "shell", inline: <<-SHELL
-                systemctl disable firewalld
-                systemctl stop firewalld
-                yum -y update
-                yum install -y wget
-                hostnamectl status
-                SHELL
-              end
-            end
-            EOF
-            vagrant up  master01 --provider=libvirt
+          # - |
+          #   cat > Vagrantfile << EOF
+          #   # -*- mode: ruby -*-
+          #   # vi: set ft=ruby :
+          #   Vagrant.configure("2") do |config|
+          #     config.vm.provider "virtualbox" do |vb|
+          #       vb.gui = false
+          #       vb.memory = "2048"
+          #       vb.cpus = 2
+          #     end
+          #     config.vm.define "master01" do |hpcluster|
+          #       hpcluster.vm.box = "bento/centos-7.7"
+          #       hpcluster.vm.hostname = "master01"
+          #       hpcluster.vm.network "private_network", ip: "192.168.1.254"
+          #       hpcluster.vm.provider "virtualbox" do |vb|
+          #           vb.name = "master01"
+          #           vb.memory = "4096"
+          #       end
+          #       hpcluster.vm.provision "ansible_local" do |ansible|
+          #       ansible.playbook = "deploy.yml"
+          #       ansible.become = true
+          #       ansible.compatibility_mode = "2.0"
+          #       ansible.version = "2.9.7"
+          #       end
+          #       hpcluster.vm.provision "shell", inline: <<-SHELL
+          #       systemctl disable firewalld
+          #       systemctl stop firewalld
+          #       yum -y update
+          #       yum install -y wget
+          #       hostnamectl status
+          #       SHELL
+          #     end
+          #   end
+          #   EOF
+          #   vagrant up  master01 --provider=libvirt
           # - sudo vagrant up  compute01 --provider=libvirt
           # - sudo vagrant up  --provider=libvirt
           # - source install.sh
           # - vagrant up  --provider=libvirt
           # - vagrant up  "compute01" --provider=libvirt
           # - vagrant ssh "compute01" -c "hostnamectl"
-          - sudo vagrant status #Check the status of the VMs to see that none of them have been created yet
+          # - sudo vagrant status #Check the status of the VMs to see that none of them have been created yet
           # - sudo vagrant up --provider=libvirt vg-irods01
           # - sudo vagrant up --no-parallel --provider=libvirt # vagrant serial runs
           # - travis_wait 40 sudo vagrant up --provider=libvirt
@@ -539,7 +539,7 @@ matrix:
 #
 #   # =============================================macOS=============================================
 #
-#     - name: "vagrant    Python 2.7.17 on macOS 10.15.4 osx xcode11.5"
+#     - name: "Virtualbox  Vagrant for Mac  Python 2.7.17 on macOS 10.15.4 osx xcode11.5"
 #       os: osx
 #       osx_image: xcode11.5
 #       language: shell
@@ -573,6 +573,39 @@ matrix:
 #         - brew cask uninstall multipass
 #         - deactivate
 #
+#     - name: "Docker for Mac   Python 2.7.17 on macOS 10.15.4 osx xcode11.5"
+#       os: osx
+#       osx_image: xcode11.5
+#       language: shell
+#       # addons:
+#       #   homebrew:
+#       #     packages:
+#       #     - beanstalk
+#       #     update: true
+#       addons:
+#         homebrew:
+#           # brewfile: Brewfile.travis
+#           # packages:
+#           #   - multipass
+#           # taps: homebrew/cask-versions
+#           casks: # Installing Casks
+#             - docker
+#           update: true
+#       before_install:
+#         - pip install virtualenv
+#         - virtualenv -p $(which python2) ~venvpy2
+#         - source ~venvpy2/bin/activate
+#       <<: *fleet_install_tasks
+#       <<: *fleet_script_tasks
+#       <<: *fleet_script_vagrant_macos_tasks
+#       script:
+#         # - brew cask install docker
+#         # - open /Applications/Docker.app  # Start Docker
+#         - brew list --versions
+#       after_success:
+#         - brew cask uninstall multipass
+#         - deactivate
+#
 # # =============================================windows=============================================
 #
 #     - name: "vagrant Python 3.8 on Windows"
@@ -589,5 +622,25 @@ matrix:
 #       <<: *fleet_script_tasks
 #       <<: *fleet_script_vagrant_win_tasks
 #       <<: *fleet_script_vagrant_win_scoop_tasks
+#       after_success:
+#         - deactivate
+
+#
+#     - name: "Docker Desktop for Windows Python 3.8 on Windows"
+#       os: windows
+#       language: shell
+#       env:
+#         - PATH=/c/Python38:/c/Python38/Scripts:$PATH
+#       before_install:
+#         - choco install python --version 3.8.1
+#         - pip install virtualenv
+#         - virtualenv $HOME/venv
+#         - source $HOME/venv/Scripts/activate
+#       <<: *fleet_install_tasks
+#       <<: *fleet_script_tasks
+#       <<: *fleet_script_vagrant_win_tasks
+#       <<: *fleet_script_vagrant_win_scoop_tasks
+          # script:
+          #   - choco install docker-desktop Windows
 #       after_success:
 #         - deactivate
