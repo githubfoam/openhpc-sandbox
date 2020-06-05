@@ -141,8 +141,7 @@ fleet_script_vagrant_bentosles12sp3_tasks : &fleet_script_vagrant_bentosles12sp3
           # - sudo vagrant up --no-parallel --provider=libvirt # vagrant serial runs
           # - travis_wait 40 sudo vagrant up --provider=libvirt
           - sudo vagrant global-status
-          # - sudo vagrant ssh "vg-docker-01" -c "hostnamectl"
-          - sudo vagrant ssh  -c "hostnamectl"
+          - sudo vagrant ssh master01 -c "hostnamectl status"          
           - sudo virsh list --all #show all running KVM/libvirt VMs
 fleet_script_vagrant_bentocentos7_tasks : &fleet_script_vagrant_bentocentos7_tasks
       script:

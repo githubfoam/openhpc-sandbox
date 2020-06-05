@@ -1,7 +1,7 @@
 # openhpc-sandbox
 
 
-[![Build Status](https://travis-ci.com/githubfoam/openhpc-sandbox.svg?branch=dev)](https://travis-ci.com/githubfoam/openhpc-sandbox)  
+[![Build Status](https://travis-ci.com/githubfoam/openhpc-sandbox.svg?branch=master)](https://travis-ci.com/githubfoam/openhpc-sandbox)  
 
 
 nodes(booted together, not sequential)
