@@ -1,0 +1,31 @@
+
+    4  sudo systemctl disable firewalld && sudo systemctl stop firewalld
+    5  sudo yum -y update
+    6  sudo yum install -y https://github.com/openhpc/ohpc/releases/download/v1.3.GA/ohpc-release-1.3-1.el7.x86_64.rpm
+    7  sudo yum install -y ohpc-base ohpc-warewulf
+
+
+
+
+   24  echo "server tr.pool.ntp.org" | sudo tee -a /etc/ntp.conf
+   26  sudo systemctl restart ntpd
+   27  sudo systemctl status ntpd
+   28  sudo yum install -y pbspro-server-ohpc
+
+   35  perl -pi -e "s/^\s+disable\s+= yes/ disable = no/" /etc/xinetd.d/tftp
+   36  sudo perl -pi -e "s/^\s+disable\s+= yes/ disable = no/" /etc/xinetd.d/tftp
+
+
+   45  sudo systemctl restart xinetd
+   46  sudo systemctl enable --now mariadb.service
+   47  sudo systemctl enable --now httpd.service
+   48  sudo systemctl enable dhcpd.service
+   49  export CHROOT=/opt/ohpc/admin/images/centos7.6
+   50  sudo wwmkchroot centos-7 $CHROOT
+
+   53  sudo  yum -y --installroot=$CHROOT install ohpc-base-compute
+   54  sudo cp -p /etc/resolv.conf $CHROOT/etc/resolv.conf
+   55  sudo yum -y --installroot=$CHROOT install pbspro-execution-ohpc
+   56  sudo perl -pi -e "s/PBS_SERVER=\S+/PBS_SERVER=${sms_name}/" $CHROOT/etc/pbs.conf
+   57  history
+   58  history > /vagrant/master01.history

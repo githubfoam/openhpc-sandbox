@@ -345,6 +345,27 @@ matrix:
       after_success:
         - deactivate
 
+# #https://minikube.sigs.k8s.io/docs/drivers/podman/
+# #https://podman.io/getting-started/installation
+#     - name: "podman Python 3.7 on bionic amd64"
+#       dist: bionic
+#       language: python
+#       python: 3.7
+#       before_install:
+#         - pip3 install virtualenv
+#         - virtualenv -p $(which python3) ~venvpy3
+#         - source ~venvpy3/bin/activate
+#       <<: *fleet_install_tasks
+#       <<: *fleet_script_tasks
+#       <<: *fleet_script_vagrant_centos_tasks
+#       # <<: *fleet_script_vagrant_bentocentos7_tasks
+#       script:
+#         # - minikube start --driver=podman --container-runtime=cri-o # Start a cluster using the podman driver with CRI-O container runtime
+#         - minikube start --driver=podman #Start a cluster using the podman driver
+#         - minikube config set driver podman #make docker the default driver
+#       after_success:
+        - deactivate
+
 #     - name: "Architecture = (x86_64) [CentOS 7.7] (with Warewulf + Slurm) Python 3.7 on bionic amd64"
 #       dist: bionic
 #       language: python
@@ -606,6 +627,45 @@ matrix:
 #         - brew cask uninstall multipass
 #         - deactivate
 #
+
+# #https://minikube.sigs.k8s.io/docs/drivers/podman/
+# #https://podman.io/getting-started/installation
+#     - name: "podman for Mac   Python 2.7.17 on macOS 10.15.4 osx xcode11.5"
+#       os: osx
+#       osx_image: xcode11.5
+#       language: shell
+#       # addons:
+#       #   homebrew:
+#       #     packages:
+#       #     - beanstalk
+#       #     update: true
+#       addons:
+#         homebrew:
+#           # brewfile: Brewfile.travis
+#           # packages:
+#           #   - multipass
+#           # taps: homebrew/cask-versions
+#           casks: # Installing Casks
+#             - podman
+#           update: true
+#       before_install:
+#         - pip install virtualenv
+#         - virtualenv -p $(which python2) ~venvpy2
+#         - source ~venvpy2/bin/activate
+#       <<: *fleet_install_tasks
+#       <<: *fleet_script_tasks
+#       <<: *fleet_script_vagrant_macos_tasks
+#       script:
+#         # - brew cask install podman
+#         # - minikube start --driver=podman --container-runtime=cri-o # Start a cluster using the podman driver with CRI-O container runtime
+#         - minikube start --driver=podman #Start a cluster using the podman driver
+#         - minikube config set driver podman #make docker the default driver
+#         - brew list --versions
+#       after_success:
+#         - brew cask uninstall multipass
+#         - deactivate
+#
+
 # # =============================================windows=============================================
 #
 #     - name: "vagrant Python 3.8 on Windows"
