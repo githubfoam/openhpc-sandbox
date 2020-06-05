@@ -41,9 +41,7 @@ jobs:
           # - travis_wait 30 sudo vagrant up --provider=libvirt
           - sudo vagrant status
           - sudo vagrant global-status
-          - sudo vagrant ssh master01 -c "hostnamectl status"
-          # - sudo vagrant ssh devstack_compute1  -c "hostnamectl status"
-          # - sudo vagrant ssh devstack_compute2 -c "hostnamectl status"
+          - sudo vagrant ssh master01 -c "hostnamectl status"          
           - sudo virsh list --all #show all running KVM/libvirt VMs
 after_success:
     - stage: Finalize
