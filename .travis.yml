@@ -1,50 +1,269 @@
-language: ruby
-# dist: xenial #16.04
-dist: bionic #18.04
+---
 sudo: required
-rvm:
-  - 2.7
+dist: bionic
 env:
   global:
-  - VAGRANT_VERSION="2.2.7"
-before_install:
-  - sudo apt-get -qq update
-jobs:
-  include:
-    - stage: "build Vagrant and Libvirt with KVM or QEMU - bionic"
-      script:
-          - sudo apt-get install libvirt-bin libvirt-dev qemu-utils qemu
-          - sudo apt-get install libvirt-bin -y
-          - sudo systemctl status libvirtd
-          - sudo libvirtd --version
-          - sudo apt-get install cpu-checker -y
-          - sudo kvm-ok
-          - egrep -c '(vmx|svm)' /proc/cpuinfo #If 0 it means that your CPU doesn't support hardware virtualization.If 1 or more it does - but you still need to make sure that virtualization is enabled in the BIOS.
-          - sudo addgroup libvirtd
-          - sudo adduser  $(id -un) libvirtd #ensure that your username is added to the group libvirtd
-          - sudo kvm-ok
-          - sudo apt-get install -y bridge-utils dnsmasq-base ebtables libvirt-bin libvirt-dev qemu-kvm qemu-utils ruby-dev
-          - sudo wget -nv https://releases.hashicorp.com/vagrant/${VAGRANT_VERSION}/vagrant_${VAGRANT_VERSION}_x86_64.deb
-          - sudo dpkg -i vagrant_${VAGRANT_VERSION}_x86_64.deb
-          - vagrant version
-          - sudo vagrant plugin install vagrant-libvirt
-          - sudo vagrant plugin install vagrant-mutate
-          - sudo vagrant status
-          - sudo virsh list --all #show all running KVM/libvirt VMs
-          - sudo vagrant box add "centos/7" --provider=libvirt
-          - vagrant box list #veridy installed boxes
-          - vagrant status #Check the status of the VMs to see that none of them have been created yet
-          - sudo vagrant up --provider=libvirt vg-irods01
-          - sudo vagrant status
-          - sudo vagrant global-status
-          - sudo vagrant ssh vg-irods01 -c "hostnamectl status"
-          - sudo virsh list --all #show all running KVM/libvirt VMs
-after_success:
-    - stage: Finalize
-      script: sudo vagrant destroy -f
+  # auto vagrant installation
 notifications:
-  #email: false
-   email:
-     on_success: never # default: change
-     on_failure: always # default: always
-   webhooks: https://galaxy.ansible.com/api/v1/notifications/
+  slack:
+    on_failure: always
+
+fleet_script_gnufortran_tasks : &fleet_script_gnufortran_tasks
+      script:
+        - sudo apt-get install -qqy gfortran valgrind # fortran90 valgrind profilers.
+        - gfortran --version
+        - pushd $(pwd)
+        - cd lab2
+        - make clean && make build
+        - echo "=========================================="
+        - echo "=========================================="
+        # - strace -c ./ff
+        # - ltrace -c ./ff
+fleet_script_tasks : &fleet_script_tasks
+      script:
+        - python --version
+fleet_install_tasks : &fleet_install_tasks
+      install:
+        - pip install -r requirements.txt
+
+
+matrix:
+  fast_finish: true
+  include:
+
+    # - name: "matrix multipliacation gfortran valgrind Python 3.7 on xenial"
+    #   dist: xenial
+    #   language: python
+    #   python: 3.7
+    #   before_install:
+    #     - pip3 install virtualenv
+    #     - virtualenv -p $(which python3) ~venvpy3
+    #     - source ~venvpy3/bin/activate
+    #   <<: *fleet_install_tasks
+    #   <<: *fleet_script_tasks
+    #   script:
+    #     - sudo apt-get install -qqy gfortran valgrind
+    #     # - which gfortran
+    #     # - whereis gfortran
+    #     # - dpkg -l | grep gfortran
+    #     # - gfortran --version
+    #     # - valgrind --version
+    #     # - gfortran -o ff ff.f90 && ls -lai
+    #     # - ./ff # first run
+    #     - make compile
+    #     - make run
+    #     - gfortran -fbounds-check -o ff ff.f90 && ls -lai
+    #     - gfortran -g -o ff ff.f90 && ls -lai
+    #     # - valgrind ./ff #valgrind: mmap(0x603000, 1600000000) failed in UME with error 22 (Invalid argument).
+    #     # - valgrind --tool=memcheck ./ff #valgrind: mmap(0x603000, 1600000000) failed in UME with error 22 (Invalid argument).
+    #     - readelf --segments ff
+    #     # c
+    #     # - gcc -Wall -pg test_gprof.c test_gprof_new.c -o test_gprof && ls -lai
+    #     # - ./test_gprof
+    #     # - gprof -a test_gprof gmon.out > analysis.txt && cat analysis.txt
+    #     # - gprof -b test_gprof gmon.out > analysis.txt && cat analysis.txt
+    #     # - gprof -p -b test_gprof gmon.out > analysis.txt && cat analysis.txt
+    #     # - gprof -pfunc1 -b test_gprof gmon.out > analysis.txt && cat analysis.txt
+    #     # - gprof -P -b test_gprof gmon.out > analysis.txt && cat analysis.txt
+    #     # - gprof -Pfunc1 -b test_gprof gmon.out > analysis.txt && cat analysis.txt
+    #     # - gprof -q -b test_gprof gmon.out > analysis.txt  && cat analysis.txt
+    #     # - gprof -qfunc1 -b test_gprof gmon.out > analysis.txt && cat analysis.txt
+    #     # - gprof -Q -b test_gprof gmon.out > analysis.txt && cat analysis.txt
+    #     # - gprof -Qfunc1 -b test_gprof gmon.out > analysis.txt && cat analysis.txt
+    #     # fortran90 multi1
+    #     - gfortran -o multi1 multi1.f90 && ls -lai
+    #     - ./multi1
+    #     - gfortran -pg -O3 -o multi1 multi1.f90 && ls -lai
+    #     - ./multi1
+    #     - gprof multi1 gmon.out
+    #     - gprof -annotated-source multi1 gmon.out
+    #   after_success:
+    #     - deactivate
+
+
+    - name: "matrix multipliacation openmp gfortran valgrind Python 3.7 on bionic"
+      dist: xenial
+      language: python
+      python: 3.7
+      before_install:
+        - pip3 install virtualenv
+        - virtualenv -p $(which python3) ~venvpy3
+        - source ~venvpy3/bin/activate
+        - sudo apt-get install -qqy gfortran valgrind # fortran90 valgrind profilers.
+      <<: *fleet_install_tasks
+      <<: *fleet_script_tasks
+      script:
+        # - sudo apt-get install -qqy gfortran valgrind # fortran90 valgrind profilers.
+        - gfortran --version
+        - pushd $(pwd)
+        - cd lab2 && make clean && make && make run && cat ff_analysis.txt
+        - echo "=========================================="
+        - echo "=========================================="
+        - strace -c ./ff
+        - ltrace -c ./ff
+        # - gfortran -pg -O3 -o ff ff.f90
+        #Compile and Link complete program with -pg and optimization
+        - gfortran -pg -Ofast -O3 -fno-inline -o ff ff.f90 #Consider turning off inlining to avoid loss of information,
+        - ./ff
+        - gprof ff gmon.out
+        - gfortran -pg -O3 -fno-inline -o ff ff.f90 #Consider turning off inlining to avoid loss of information,
+        - ./ff
+        - gprof ff gmon.out
+        - gfortran -pg -O2 -fno-inline -o ff ff.f90 #Optimize for code speed
+        - ./ff
+        - gprof ff gmon.out
+        - gfortran -pg -O1 -fno-inline -o ff ff.f90 #Optimize for code speed
+        - ./ff
+        - gprof ff gmon.out
+        # - gprof -l ff gmon.out
+        # - gprof -a ff gmon.out
+        # - gprof -b ff gmon.out
+        # - gprof -p -b ff gmon.out
+        # - gprof -P -b ff gmon.out
+        # - gprof -q -b ff gmon.out
+        # - gprof -Q -b ff gmon.out
+        # - gprof -pfunc1 -b test_gprof gmon.out #Print information related to specific function in flat profile
+        # - gprof -Pfunc1 -b test_gprof gmon.out #Print information related to specific function in flat profile
+        # - gprof -qfunc1 -b test_gprof gmon.out #Print information related to specific function in flat profile
+        # - gprof -Qfunc1 -b test_gprof gmon.out #Print information related to specific function in flat profile
+        - echo "=========================================="
+        - echo "=========================================="
+        - popd
+        - cd lab3 && make clean && make
+        # - gfortran -c ff_openmp.f90 && ls -lai
+        # - gfortran -o ff_openmp ff_openmp.o && ls -lai
+        # - ./ff_openmp
+        - echo "=========================================="
+        - echo "===============OPENMP==========================="
+        - echo "=========================================="
+        - strace -c ./ff_openmp
+        - ltrace -c ./ff_openmp
+        # - gfortran -pg -O3 -o ff_openmp ff_openmp.f90
+        #Compile and Link complete program with -pg and optimization
+        - gfortran -pg -openmp -Ofast -fno-inline -o ff_openmp ff_openmp.f90 #Consider turning off inlining to avoid loss of information,
+        - ./ff_openmp
+        - gprof ff_openmp gmon.out  # 16.30
+        - gfortran -pg -openmp -Wall -O3 -fno-inline -o ff_openmp ff_openmp.f90 #Consider turning off inlining to avoid loss of information,
+        - ./ff_openmp
+        - gprof ff_openmp gmon.out  #16.31
+        - gfortran -pg -openmp -O3 -fno-inline -o ff_openmp ff_openmp.f90 #Consider turning off inlining to avoid loss of information,
+        - ./ff_openmp
+        - gprof ff_openmp gmon.out  #16.45 16.38
+        - gfortran -pg -openmp -Ofast -fno-inline -o ff_openmp ff_openmp.f90 #Consider turning off inlining to avoid loss of information,
+        - ./ff_openmp
+        - gprof ff_openmp gmon.out #16.56 16.12
+        - gfortran -pg -openmp -Ofast -O2 -fno-inline -o ff_openmp ff_openmp.f90 #Optimize for code speed
+        - ./ff_openmp
+        - gprof ff_openmp gmon.out #?
+        - gfortran -pg -openmp -O2 -fno-inline -o ff_openmp ff_openmp.f90 #Optimize for code speed
+        - ./ff_openmp
+        - gprof ff_openmp gmon.out #31.81 31.90
+        # - gfortran -pg -openmp -O1 -fno-inline -o ff_openmp ff_openmp.f90 #Optimize for code speed
+        # - ./ff_openmp
+        # - gprof ff_openmp gmon.out #31.48 31.85
+        # - gfortran -pg -openmp -fno-inline -o ff_openmp ff_openmp.f90 #Consider turning off inlining to avoid loss of information,
+        # - ./ff_openmp
+        # - gprof ff_openmp gmon.out #32.25  31.79
+        # - gprof -l ff_openmp gmon.out
+        # - gprof -a ff_openmp gmon.out
+        # - gprof -b ff_openmp gmon.out
+        # - gprof -p -b ff_openmp gmon.out
+        # - gprof -P -b ff_openmp gmon.out
+        # - gprof -q -b ff_openmp gmon.out
+        # - gprof -Q -b ff_openmp gmon.out
+        # - gprof -pfunc1 -b test_gprof gmon.out #Print information related to specific function in flat profile
+        # - gprof -Pfunc1 -b test_gprof gmon.out #Print information related to specific function in flat profile
+        # - gprof -qfunc1 -b test_gprof gmon.out #Print information related to specific function in flat profile
+        # - gprof -Qfunc1 -b test_gprof gmon.out #Print information related to specific function in flat profile
+        - echo "=========================================="
+        - echo "=========================================="
+        # - gfortran -o ff_openmp -Ofast -O3 -pg ff_openmp.f90 > ff_openmp_analysis.txt && ls -lai
+        # - cat ff_openmp_analysis.txt
+        # - ./ff_openmp  && ls -lai
+        # - gprof ff_openmp
+        # - cd lab3 && make clean && make && make run && cat ff_openmp_analysis.txt
+        # - ls -lai
+        # - sudo gfortran -Ofast -g -O3 -pg -fbounds-check ff ff.f90
+        # - ./ff
+        # - gprof -a ff_openmp gmon.out | sudo tee ff_analysis.txt
+        # - cat ff_analysis.txt
+        # - |
+        #   dirs -v
+        #   pushd $(pwd)
+        #   cd lab2
+        #   gfortran -Ofast -g -O3 -pg -fbounds-check ff ff.f90  && ls -lai
+        #   ./ff && ls -lai
+        #   gprof -a ff_openmp gmon.out > ff_analysis.txt
+        #   cat ff_analysis.txt
+        #   popd
+        #   dirs -v
+        # -  |
+        #   dirs -v
+        #   pushd $(pwd)
+        #   cd lab3
+        #   gfortran -fopenmp -Ofast -g -O3 -pg -fbounds-check ff_openmp ff_openmp.f90 && ls -lai
+        #   ./ff_openmp && ls -lai
+        #   gprof -a ff_openmp gmon.out > ff_openmp_analysis.txt
+        #   cat ff_openmp_analysis.txt
+        #   popd
+        #   dirs -v
+      after_success:
+        - deactivate
+
+    - name: "gnu fortran Python 3.7 on bionic amd64"
+      os: linux
+      dist: bionic
+      arch: arm64
+      language: python
+      python: 3.7
+      before_install:
+        - pip3 install virtualenv
+        - virtualenv -p $(which python3) ~venvpy3
+        - source ~venvpy3/bin/activate
+      <<: *fleet_install_tasks
+      <<: *fleet_script_tasks
+      <<: *fleet_script_gnufortran_tasks
+      after_success:
+        - deactivate
+
+    - name: "gnu fortran Python 3.7 on bionic ppc64le"
+      os: linux
+      arch: ppc64le
+      dist: bionic
+      language: python
+      python: 3.7
+      # env:
+      #   - LIB_PATH="/usr/bin/shared/x86_64/v1"
+      # compiler:
+      #  - gcc
+      #  - clang
+      before_install:
+        - pip3 install virtualenv
+        - virtualenv -p $(which python3) ~venvpy3
+        - source ~venvpy3/bin/activate
+      <<: *fleet_install_tasks
+      <<: *fleet_script_tasks
+      <<: *fleet_script_gnufortran_tasks
+      after_success:
+        - deactivate
+
+    - name: "gnu fortran Python 3.7 on bionic s390x" #Unable to locate package osquery
+      os: linux
+      arch: s390x
+      dist: bionic
+      language: python
+      python: 3.7
+      # env:
+      #   - LIB_PATH="/usr/bin/shared/x86_64/v1"
+      # compiler:
+      #  - gcc
+      #  - clang
+      before_install:
+        - pip3 install virtualenv
+        - virtualenv -p $(which python3) ~venvpy3
+        - source ~venvpy3/bin/activate
+      <<: *fleet_install_tasks
+      <<: *fleet_script_tasks
+      <<: *fleet_script_gnufortran_tasks
+      after_success:
+        - deactivate

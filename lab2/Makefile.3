@@ -1,0 +1,43 @@
+F90 = gfortran
+TARGET=ff
+OBJECTS = $(TARGET).o
+FCFLAGS = -g -pg -fbounds-check
+OPFLAGS = -Ofast -O3 -O2 -O1
+PROFILERS = gprof
+
+#all: clean build
+
+build-Ofast:
+	 # $(foreach var,$(OPFLAGS),$(F90)  $(var)  $(FCFLAGS) -o $(TARGET) $(TARGET).f90;)
+	 # $(foreach var,$(OPFLAGS),$(F90)  $(var)  $(FCFLAGS) -o $(TARGET) $(TARGET).f90 && ./$(TARGET) && gprof $(TARGET) gmon.out;)
+	 # gfortran -pg -O2 -fno-inline -o ff ff.f90
+	$(F90) -Ofast $(FCFLAGS) -o $(TARGET) $(TARGET).f90
+	./$(TARGET)
+	$(PROFILERS) $(TARGET) gmon.out
+
+build-O3:
+	 # $(foreach var,$(OPFLAGS),$(F90)  $(var)  $(FCFLAGS) -o $(TARGET) $(TARGET).f90;)
+	 # $(foreach var,$(OPFLAGS),$(F90)  $(var)  $(FCFLAGS) -o $(TARGET) $(TARGET).f90 && ./$(TARGET) && gprof $(TARGET) gmon.out;)
+	 # gfortran -pg -O2 -fno-inline -o ff ff.f90
+	$(F90) -O3 $(FCFLAGS) -o $(TARGET) $(TARGET).f90
+	./$(TARGET)
+	$(PROFILERS) $(TARGET) gmon.out
+
+
+# $(TARGET): $(OBJECTS)
+# 	$(F90) $(FCFLAGS) -o $(TARGET) $(OBJECTS)
+
+#$(TARGET).o:  $(TARGET).f90
+#       $(F90) $(FCFLAGS) -c $(TARGET).f90
+# %.o: %.f90
+# 	$(F90) $(FCFLAGS) -c $^
+
+# run:
+# 	./$(TARGET)
+# 	$(foreach var,$(PROFILERS),$(var) $(TARGET) gmon.out ;)
+	# gprof $(TARGET) gmon.out > ff_analysis.txt
+
+.PHONY:clean
+
+clean:
+	rm -rf $(TARGET) $(OBJECTS) *.out *.o

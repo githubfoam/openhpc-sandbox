@@ -1,6 +1,0 @@
----
-- hosts: master
-  roles:
-    - common
-    - clustermaster
-    - slurm
