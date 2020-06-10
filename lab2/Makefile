@@ -11,16 +11,16 @@ all: build-gprof build-strace build-ltrace #build-valgrind
 .PHONY: all
 
 build-gprof:
-	 $(foreach var,$(OPFLAGS),$(F90)  $(var)  $(FCFLAGS) -o $(TARGET) $(TARGET).f90 && ./$(TARGET) && gprof $(TARGET) gmon.out && rm -rf $(TARGET) $(OBJECTS) *.out *.o && echo "==========Build finished with"$(var)"===================" ;)
+	$(foreach var,$(OPFLAGS),$(F90)  $(var)  $(FCFLAGS) -o $(TARGET) $(TARGET).f90 && ./$(TARGET) && gprof $(TARGET) gmon.out && rm -rf $(TARGET) $(OBJECTS) *.out *.o && echo "==========Build finished with"$(var)"===================" ;)
 
 build-strace:
-	 $(foreach var,$(OPFLAGS),$(F90)  $(var)  $(FCFLAGS) -o $(TARGET) $(TARGET).f90 && ./$(TARGET) && strace -c ./$(TARGET)  && rm -rf $(TARGET) $(OBJECTS) *.out *.o && echo "==========Build finished with"$(var)"===================" ;)
+	$(foreach var,$(OPFLAGS),$(F90)  $(var)  $(FCFLAGS) -o $(TARGET) $(TARGET).f90 && ./$(TARGET) && strace -c ./$(TARGET)  && rm -rf $(TARGET) $(OBJECTS) *.out *.o && echo "==========Build finished with"$(var)"===================" ;)
 
 build-ltrace:
-	 $(foreach var,$(OPFLAGS),$(F90)  $(var)  $(FCFLAGS) -o $(TARGET) $(TARGET).f90 && ./$(TARGET) && ltrace -c ./$(TARGET)  && rm -rf $(TARGET) $(OBJECTS) *.out *.o && echo "==========Build finished with"$(var)"===================" ;)
+	$(foreach var,$(OPFLAGS),$(F90)  $(var)  $(FCFLAGS) -o $(TARGET) $(TARGET).f90 && ./$(TARGET) && ltrace -c ./$(TARGET)  && rm -rf $(TARGET) $(OBJECTS) *.out *.o && echo "==========Build finished with"$(var)"===================" ;)
 
 build-valgrind:
- 	 $(foreach var,$(OPFLAGS),$(F90)  $(var)  $(FCFLAGS) -o $(TARGET) $(TARGET).f90 && ./$(TARGET) && valgrind --tool=memcheck ./$(TARGET)  && rm -rf $(TARGET) $(OBJECTS) *.out *.o && echo "==========Build finished with"$(var)"===================" ;)
+ 	$(foreach var,$(OPFLAGS),$(F90)  $(var)  $(FCFLAGS) -o $(TARGET) $(TARGET).f90 && ./$(TARGET) && valgrind --tool=memcheck ./$(TARGET)  && rm -rf $(TARGET) $(OBJECTS) *.out *.o && echo "==========Build finished with"$(var)"===================" ;)
 
 clean:
 	rm -rf $(TARGET) $(OBJECTS) *.out *.o
