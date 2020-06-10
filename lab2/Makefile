@@ -1,7 +1,9 @@
 F90 = gfortran
 TARGET=ff
 OBJECTS = $(TARGET).o
-FCFLAGS = -g -pg -fbounds-check
+# -pg Gprof (GNU Performance Profiler)
+# -ffast-math 	Possibly unsafe floating point optimizations
+FCFLAGS = -g -pg -fbounds-check -ffast-math
 OPFLAGS = -Ofast -O3 -O2 -O1
 PROFILERS = gprof
 

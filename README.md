@@ -133,3 +133,34 @@ notice and this notice are preserved.
 ==========Build finished with-O3===================
 
 ~~~~
+~~~~
+Optimization Level
+
+Compile only. Default: -o2
+
+GFortran options: -o0, -o1, -o2, -o3, -os, -ofast
+
+Specify -o0 to disable optimizations.
+
+Specify -o1 to perform level-1 optimizations.
+
+Specify -o2 to perform level-2 optimizations.
+
+Specify -o3 to perform level-3 optimizations.
+
+Specify -os to optimize for size.
+
+Specify -ofast to perform level-3 optimizations plus disregard strict standards compliance.
+
+Note that -o3 or -ofast can cause your program to require more stack at runtime. If your program exceeds the maximum amount of stack at runtime, increase the stack by using the -stack option.
+http://www.lahey.com/docs/lgf13help/LFCOO0O1.htm
+
+Output flags
+Warning flags
+Fortran dialect flags
+        -fopenmp: Tells gfortran to compile using OpenMP. Without this flag, OpenMP directives in your code will be ignored.
+        -std=f95: Enforces strict compliance with the Fortran 95 standard. This is like -pedantic, except it generates errors instead of warnings.
+Debugging flags
+Optimization flags
+https://faculty.washington.edu/rjl/uwamath583s11/sphinx/notes/html/gfortran_flags.html
+~~~~
