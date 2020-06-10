@@ -7,7 +7,7 @@ FCFLAGS = -g -pg -fbounds-check -ffast-math
 OPFLAGS = -Ofast -O3 -O2 -O1
 #PROFILERS = gprof strace ltrace valgrind
 
-all: build-gprof build-strace build-ltrace #build-valgrind
+all: build-gprof build-strace build-ltrace build-valgrind
 .PHONY: all
 
 build-gprof:
