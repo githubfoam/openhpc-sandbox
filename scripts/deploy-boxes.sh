@@ -19,7 +19,7 @@ vagrant plugin install vagrant-mutate #Convert vagrant boxes to work with differ
 # vagrant up --provider=libvirt "vg-opensuse-01"
 #
 # # https://app.vagrantup.com/centos/boxes/8
-vagrant box add  "centos/8" --provider=libvirt
+vagrant box add  "centos/7" --provider=libvirt
 vagrant up --provider=libvirt "vg-compute-01"
 vagrant up --provider=libvirt "vg-compute-02"
 vagrant up --provider=libvirt "vg-compute-03"

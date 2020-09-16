@@ -1,6 +1,6 @@
 ---
 - vagrant_box_host: "vg-compute-01"
-  vagrant_box: "centos/8"
+  vagrant_box: "centos/7"
   vbox_name: "vbox-compute-01"
   vbox_ram: 2048
   vbox_cpu: 2
@@ -14,7 +14,7 @@
   # ansible_compatibility_mode: "2.0"
 
 - vagrant_box_host: "vg-compute-02"
-  vagrant_box: "centos/8"
+  vagrant_box: "centos/7"
   vbox_name: "vbox-compute-02"
   vbox_ram: 2048
   vbox_cpu: 2
@@ -28,7 +28,7 @@
   # ansible_compatibility_mode: "2.0"
 
 - vagrant_box_host: "vg-compute-03"
-  vagrant_box: "centos/8"
+  vagrant_box: "centos/7"
   vbox_name: "vbox-compute-03"
   vbox_ram: 2048
   vbox_cpu: 2
