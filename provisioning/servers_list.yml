@@ -22,7 +22,7 @@
   vagrant_box_ip: 192.168.18.83
   guest_port: 80
   host_port: 8883
-  server_script: "provisioning/susegeneric.sh"
+  server_script: "provisioning/bootstrap.sh"
   # server_bootstrap: "provisioning/deploy.yml"
   # ansible_version: "2.9.2"
   # ansible_compatibility_mode: "2.0"
@@ -36,7 +36,7 @@
   vagrant_box_ip: 192.168.18.84
   guest_port: 80
   host_port: 8884
-  server_script: "provisioning/susegeneric.sh"
+  server_script: "provisioning/bootstrap.sh"
   # server_bootstrap: "provisioning/deploy.yml"
   # ansible_version: "2.9.2"
   # ansible_compatibility_mode: "2.0"
