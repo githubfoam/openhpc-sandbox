@@ -3,8 +3,8 @@ dist: bionic #18.04
 sudo: required
 rvm:
   - 2.7
-env:
-  global:
+# env:
+#   global:
   # - VAGRANT_VERSION="2.2.9"
 notifications:
    slack:
